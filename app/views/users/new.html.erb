@@ -1,0 +1,10 @@
+<h1>New User</h1>
+
+<p><%=link_to 'Users', users_path %></p>
+
+<%= form_for @user do |f| %>
+  <%=render partial: 'form', locals: { f: f } %>
+  <p>Password:</p>
+  <p><%=f.password_field :password %></p>
+  <p><%=f.submit 'Create' %></p>
+<% end %>

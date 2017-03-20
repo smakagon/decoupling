@@ -1,0 +1,6 @@
+<h1>Profile</h1>
+
+<p><%=link_to 'Users', users_path %></p>
+
+<p><%=@user.first_name %> <%=@user.last_name %></p>
+<p><%=link_to "edit", edit_user_path(@user) %> / <%=link_to "delete", user_path(@user), method: :delete %></p>

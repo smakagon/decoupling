@@ -1,0 +1,8 @@
+<h1>Edit User</h1>
+
+<%=link_to 'Users', users_path %>
+
+<%= form_for @user do |f| %>
+  <%=render partial: 'form', locals: { f: f } %>
+  <p><%=f.submit 'Update' %></p>
+<% end %>

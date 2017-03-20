@@ -3,11 +3,9 @@ require 'database_cleaner'
 require 'capybara/rspec'
 
 RSpec.configure do |config|
-  if defined?(ActiveRecord)
-    config.around(:each) do |example|
-      DatabaseCleaner.cleaning do
-        example.run
-      end
+  config.around(:each) do |example|
+    DatabaseCleaner.cleaning do
+      example.run
     end
   end
 
@@ -24,3 +22,4 @@ RSpec.configure do |config|
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
 end
+DatabaseCleaner[:active_record].strategy = :transaction
