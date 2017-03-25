@@ -10,39 +10,34 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = repo.new_entity(user_params)
-    if repo.save(@user)
-      redirect_to user_path(@user), notice: 'User has been created'
-    else
-      render :new
-    end
+    success = ->(user) { redirect_to user_path(user), notice: 'User has been created' }
+    error = ->(user) { @user = user; render :new }
+
+    UseCase::User::SignUp.new(repo).call(user_params, success: success, failure: error)
   end
 
   def edit; end
 
   def update
-    @user.assign_attributes(user_params)
-    if repo.save(@user)
-      redirect_to user_path(@user), notice: 'User has been updated'
-    else
-      render :edit
-    end
+    success = ->(user) { redirect_to user_path(user), notice: 'User has been updated' }
+    error = ->(user) { @user = user; render :edit }
+
+    UseCase::User::UpdateProfile.new(repo).call(@user, user_params, success: success, failure: error)
   end
 
   def show; end
 
   def destroy
-    if @user.destroy
-      redirect_to users_path, notice: 'User has been removed'
-    else
-      redirect_to users_path, alert: 'Couldn\'t remove user'
-    end
+    success = -> { redirect_to users_path, notice: 'User has been removed' }
+    error = -> { redirect_to users_path, alert: 'Couldn\'t remove user' }
+
+    UseCase::User::DeleteProfile.new(repo).call(@user, success: success, failure: error)
   end
 
   private
 
   def set_user
-    @user = User.find(params[:id])
+    @user = repo.find(params[:id])
   end
 
   def user_params
