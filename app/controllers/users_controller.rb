@@ -2,16 +2,16 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:edit, :update, :show, :destroy]
 
   def index
-    @users = User.all
+    @users = repo.all
   end
 
   def new
-    @user = User.new
+    @user = repo.new_entity
   end
 
   def create
-    @user = User.new(user_params)
-    if @user.save
+    @user = repo.new_entity(user_params)
+    if repo.save(@user)
       redirect_to user_path(@user), notice: 'User has been created'
     else
       render :new
@@ -21,7 +21,8 @@ class UsersController < ApplicationController
   def edit; end
 
   def update
-    if @user.update(user_params)
+    @user.assign_attributes(user_params)
+    if repo.save(@user)
       redirect_to user_path(@user), notice: 'User has been updated'
     else
       render :edit
@@ -46,5 +47,9 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:first_name, :last_name, :password)
+  end
+
+  def repo
+    @repo ||= UserRepository.new
   end
 end
