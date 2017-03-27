@@ -10,7 +10,10 @@ class UsersController < ApplicationController
   end
 
   def create
-    success = ->(user) { redirect_to user_path(user), notice: 'User has been created' }
+    success = lambda do |user|
+      redirect_to user_path(user), notice: 'User has been created'
+    end
+
     error = lambda do |user|
       @user = user
       render :new
@@ -22,13 +25,18 @@ class UsersController < ApplicationController
   def edit; end
 
   def update
-    success = ->(user) { redirect_to user_path(user), notice: 'User has been updated' }
+    success = lambda do |user|
+      redirect_to user_path(user), notice: 'User has been updated'
+    end
+
     error = lambda do |user|
       @user = user
       render :edit
     end
 
-    UseCase::User::UpdateProfile.call(@user, user_params, success: success, failure: error)
+    UseCase::User::UpdateProfile.call(
+      @user, user_params, success: success, failure: error
+    )
   end
 
   def show; end

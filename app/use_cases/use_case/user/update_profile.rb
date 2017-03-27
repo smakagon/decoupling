@@ -8,7 +8,11 @@ module UseCase
       def call
         user.assign_attributes(attrs)
 
-        repository.save(user) ? callbacks[:success].call(user) : callbacks[:failure].call(user)
+        if repository.save(user)
+          callbacks[:success].call(user)
+        else
+          callbacks[:failure].call(user)
+        end
       end
 
       private
