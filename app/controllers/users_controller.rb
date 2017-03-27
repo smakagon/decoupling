@@ -11,18 +11,24 @@ class UsersController < ApplicationController
 
   def create
     success = ->(user) { redirect_to user_path(user), notice: 'User has been created' }
-    error = ->(user) { @user = user; render :new }
+    error = lambda do |user|
+      @user = user
+      render :new
+    end
 
-    UseCase::User::SignUp.new(repo).call(user_params, success: success, failure: error)
+    UseCase::User::SignUp.call(user_params, success: success, failure: error)
   end
 
   def edit; end
 
   def update
     success = ->(user) { redirect_to user_path(user), notice: 'User has been updated' }
-    error = ->(user) { @user = user; render :edit }
+    error = lambda do |user|
+      @user = user
+      render :edit
+    end
 
-    UseCase::User::UpdateProfile.new(repo).call(@user, user_params, success: success, failure: error)
+    UseCase::User::UpdateProfile.call(@user, user_params, success: success, failure: error)
   end
 
   def show; end
@@ -31,7 +37,7 @@ class UsersController < ApplicationController
     success = -> { redirect_to users_path, notice: 'User has been removed' }
     error = -> { redirect_to users_path, alert: 'Couldn\'t remove user' }
 
-    UseCase::User::DeleteProfile.new(repo).call(@user, success: success, failure: error)
+    UseCase::User::DeleteProfile.call(@user, success: success, failure: error)
   end
 
   private
